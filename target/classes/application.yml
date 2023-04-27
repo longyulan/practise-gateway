@@ -1,0 +1,32 @@
+server:
+  port: 9006
+spring:
+  application:
+    name: practise-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.108.254.105:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: practise
+          uri: lb://practise
+          predicates:
+            - Path=/mxn/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@hostKeyResolver}'
+                redis-rate-limiter:
+                  #每秒填充速率
+                  replenish-rate: 1
+                  #令牌桶总容量
+                  burst-capacity: 3
+  redis:
+    host: '47.108.254.105'
+    port: 6379
+    database: 0
+    password: '000415'
